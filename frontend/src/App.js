@@ -4,6 +4,7 @@ import axios from "axios";
 function App() {
   const [tasks, setTasks] = useState([]);
   const [text, setText] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   const fetchTasks = async () => {
     const res = await axios.get("http://localhost:3001/tasks");
@@ -12,8 +13,9 @@ function App() {
 
   const addTask = async () => {
     if (text.trim()) {
-      await axios.post("http://localhost:3001/tasks", { text });
+      await axios.post("http://localhost:3001/tasks", { text, dueDate });
       setText("");
+      setDueDate("");
       fetchTasks();
     }
   };
@@ -35,12 +37,18 @@ function App() {
         onChange={(e) => setText(e.target.value)}
         placeholder="Add a task"
       />
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+      />
       <button onClick={addTask}>Add</button>
 
       <ul>
         {tasks.map((task) => (
           <li key={task.id}>
-            {task.text}{" "}
+            {task.text}
+            {task.dueDate ? ` (due ${task.dueDate})` : ""}
             <button onClick={() => deleteTask(task.id)}>❌</button>
           </li>
         ))}
